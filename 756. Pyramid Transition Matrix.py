@@ -2,17 +2,18 @@ from collections import defaultdict
 
 class Solution:
     def pyramidTransition(self, bottom: str, allowed: List[str]) -> bool:
-        # Build mapping
         mapping = defaultdict(list)
         for a, b, c in allowed:
             mapping[(a, b)].append(c)
         
-        # Recursive function
+        memo = {}
+        
         def dfs(row: str) -> bool:
             if len(row) == 1:
                 return True
+            if row in memo:
+                return memo[row]
             
-            # Generate all possible next rows
             def build_next(i, path):
                 if i == len(row) - 1:
                     return dfs(path)
@@ -23,6 +24,7 @@ class Solution:
                         return True
                 return False
             
-            return build_next(0, "")
+            memo[row] = build_next(0, "")
+            return memo[row]
         
         return dfs(bottom)
